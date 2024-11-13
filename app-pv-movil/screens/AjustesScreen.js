@@ -1,86 +1,128 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, Button, ScrollView } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 
-
-export default function SettingsScreen() {
+export default function SettingsScreen({ navigation }) {
   const [darkMode, setDarkMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [fontSize, setFontSize] = useState(14);
-  const navigation = useNavigation();
+  const [displayedFontSize, setDisplayedFontSize] = useState(fontSize);  // Estado temporal
+  const [highContrast, setHighContrast] = useState(false);
+  const [notificationsSound, setNotificationsSound] = useState(false);  // Notificaciones sonoras
+  const [notificationsVibration, setNotificationsVibration] = useState(false);  // Vibración
+
+  const disabledStyle = notificationsEnabled ? {} : { opacity: 0.5 };
+  const disabledSwitch = notificationsEnabled ? {} : { disabled: true };
 
   return (
     <LinearGradient
-      colors={['#a8e6cf', '#dcedc1']}
-      style={styles.container}
+      colors={darkMode ? ['#232526', '#414345'] : ['#a8e6cf', '#dcedc1']}
+      style={styles.gradientBackground}
     >
-      {/* Ajustes de Tema Oscuro/Claro */}
-      <View style={styles.settingRow}>
-        <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Tema oscuro / claro</Text>
-        <Switch
-          value={darkMode}
-          onValueChange={(value) => setDarkMode(value)}
-        />
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Ajustes de Tema Oscuro/Claro */}
+        <View style={styles.settingRow}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Tema oscuro / claro</Text>
+          <Switch
+            value={darkMode}
+            onValueChange={(value) => setDarkMode(value)}
+            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+          />
+        </View>
 
-      {/* Ajustes de Notificaciones */}
-      <View style={styles.settingRow}>
-        <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Notificaciones</Text>
-        <Switch
-          value={notificationsEnabled}
-          onValueChange={(value) => setNotificationsEnabled(value)}
-        />
-      </View>
+        {/* Ajustes de Alto Contraste */}
+        <View style={styles.settingRow}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Alto contraste</Text>
+          <Switch
+            value={highContrast}
+            onValueChange={(value) => setHighContrast(value)}
+            thumbColor={highContrast ? '#000' : '#007AFF'}
+            trackColor={{ false: '#767577', true: '#ffeb3b' }}
+          />
+        </View>
 
-      {/* Ajustes de Tamaño de Letras */}
-      <View style={styles.sliderContainer}>
-        <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Tamaño de letras</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={10}
-          maximumValue={30}
-          step={1}
-          value={fontSize}
-          onValueChange={(value) => setFontSize(value)}
-          minimumTrackTintColor="#007AFF"
-          maximumTrackTintColor={darkMode ? '#fff' : '#000'}
-          thumbTintColor="#007AFF"
-        />
-        <Text style={{ fontSize, color: darkMode ? '#fff' : '#000' }}>Aa</Text>
-      </View>
+        {/* Ajustes de Notificaciones */}
+        <View style={styles.settingRow}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Notificaciones</Text>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={(value) => setNotificationsEnabled(value)}
+            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+          />
+        </View>
 
-      {/* Botones para Navegación */}
-      <Pressable
-        style={styles.transparentButton}
-        onPress={() => navigation.navigate('./HomeScreen')}
-      >
-        <Text style={styles.buttonText}>Contacto</Text>
-      </Pressable>
+        {/* Notificaciones Sonoras */}
+        <View style={[styles.settingRow, disabledStyle]}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Sonido de notificaciones</Text>
+          <Switch
+            value={notificationsSound}
+            onValueChange={(value) => setNotificationsSound(value)}
+            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            {...disabledSwitch}
+          />
+        </View>
 
-      <Pressable
-        style={styles.transparentButton}
-        onPress={() => navigation.navigate('./HomeScreen')}
-      >
-        <Text style={styles.buttonText}>Términos y condiciones</Text>
-      </Pressable>
+        {/* Vibración en Notificaciones */}
+        <View style={[styles.settingRow, disabledStyle]}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Vibración en notificaciones</Text>
+          <Switch
+            value={notificationsVibration}
+            onValueChange={(value) => setNotificationsVibration(value)}
+            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            {...disabledSwitch}
+          />
+        </View>
 
-      <Pressable
-        style={styles.transparentButton}
-        onPress={() => navigation.navigate('./HomeScreen.js')}
-      >
-        <Text style={styles.buttonText}>Información de aplicación</Text>
-      </Pressable>
+        {/* Ajustes de Tamaño de Letras */}
+        <View style={styles.sliderContainer}>
+          <Text style={[styles.label, { color: darkMode ? '#fff' : '#000' }]}>Tamaño de letras</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={10}
+            maximumValue={30}
+            step={2}  // Incremento de 2 para 10 niveles
+            value={fontSize}
+            onValueChange={(value) => setDisplayedFontSize(value)}  // Actualiza el estado temporal mientras se desliza
+            onSlidingComplete={(value) => setFontSize(value)}  // Ajusta el tamaño final al completar
+            minimumTrackTintColor="#007AFF"
+            maximumTrackTintColor={darkMode ? '#fff' : '#000'}
+            thumbTintColor="#007AFF"
+          />
+          <Text style={{ fontSize: displayedFontSize, color: darkMode ? '#fff' : '#000' }}>Aa</Text>
+        </View>
+
+        {/* Sección de Información adicional */}
+        <View style={styles.infoSection}>
+          <Button title="Acerca de la App" onPress={() => navigation.navigate('AboutApp')} />
+          <View style={styles.buttonSpacing} />
+          <Button title="Términos y Condiciones" onPress={() => navigation.navigate('TermsConditions')} />
+          <View style={styles.buttonSpacing} />
+          <Button title="Contacto" onPress={() => navigation.navigate('Contact')} />
+          <View style={styles.buttonSpacing} />
+          <Button title="Ayuda" onPress={() => navigation.navigate('Help')} />
+        </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  gradientBackground: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    paddingBottom: 40,  // Para permitir espacio para deslizar al final
   },
   settingRow: {
     flexDirection: 'row',
@@ -90,25 +132,20 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    fontWeight: '500',
   },
   sliderContainer: {
     marginVertical: 20,
+    alignItems: 'center',
   },
   slider: {
     width: '100%',
     height: 40,
   },
-  transparentButton: {
-    paddingVertical: 12,
-    marginVertical: 10,
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    borderRadius: 8,
+  infoSection: {
+    marginTop: 30,
   },
-  buttonText: {
-    color: '#007AFF',
-    fontSize: 16,
-  },
+  buttonSpacing: {
+    marginBottom: 10, // Espacio entre los botones
+  }
 });
