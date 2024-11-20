@@ -102,7 +102,7 @@ export default function SettingsScreen({ navigation }) {
           <View style={styles.buttonSpacing} />
           <Button title="Términos y Condiciones" onPress={() => navigation.navigate('TermsConditions')} />
           <View style={styles.buttonSpacing} />
-          <Button title="Contacto" onPress={() => navigation.navigate('Contact')} />
+          <Button title="contacto" onPress={() => navigation.navigate('contacto')} />
           <View style={styles.buttonSpacing} />
           <Button title="Ayuda" onPress={() => navigation.navigate('Help')} />
         </View>

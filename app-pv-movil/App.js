@@ -1,70 +1,157 @@
-import 'react-native-gesture-handler'; // Mantén esta línea
+import 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesome } from '@expo/vector-icons';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Importa GestureHandlerRootView
+import { View, TouchableOpacity, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Importar las pantallas de la app
 import MapaScreen from './screens/MapaScreen';
 import CalendarioScreen from './screens/CalendarioScreen';
 import AjustesScreen from './screens/AjustesScreen';
 import NotificacionesScreen from './screens/NotificacionesScreen';
-import SplashScreen from './screens/Bienvenida'; // Importar el archivo Bienvenida.js
+import ReciclaScreen from './screens/ReciclaScreen';
+import DenunciasScreen from './screens/DenunciasScreen';
+import SplashScreen from './screens/Bienvenida';
+import AcercaAppScreen from './screens/AcercaAppScreen';
+import TerminosCScreen from './screens/TerminosCScreen';
+import ContactoScreen from './screens/ContactoScreen';
+import AyudaScreen from './screens/AyudaScreen';
 
 const App = () => {
   const [isSplashVisible, setSplashVisible] = useState(true);
+  const [menuVisible, setMenuVisible] = useState(false); // Estado para el menú desplegable
+  const [activeScreen, setActiveScreen] = useState('Mapa'); // Pantalla activa
+  const [lastScreen, setLastScreen] = useState('Mapa'); // Guarda la última pantalla seleccionada
 
   const handleSplashFinish = () => {
     setSplashVisible(false); // Oculta la pantalla de bienvenida después del tiempo definido
   };
 
-  const Stack = createNativeStackNavigator(); // Asegúrate de crear el Stack Navigator correctamente
+  const Stack = createNativeStackNavigator();
 
-  const TopBar = ({ setActiveScreen }) => (
+  const TopBar = () => (
     <View style={styles.topBar}>
-      <TouchableOpacity onPress={() => setActiveScreen('Ajustes')}>
-        <FontAwesome name="cogs" size={24} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveScreen('Notificaciones')}>
+      <TouchableOpacity onPress={() => { 
+        setActiveScreen('Notificaciones'); 
+        setLastScreen('Notificaciones'); // Guarda la pantalla seleccionada
+        setMenuVisible(false); // Cierra el menú cuando se selecciona una opción
+      }}>
         <FontAwesome name="bell" size={24} color="white" />
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => setMenuVisible((prev) => !prev)}>
+        <FontAwesome name="bars" size={24} color="white" />
+      </TouchableOpacity>
+      {menuVisible && (
+        <View style={styles.menuDropdown}>
+          <TouchableOpacity onPress={() => handleMenuItemPress('Ajustes')}>
+            <Text style={styles.menuItem}>Configuraciones</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleMenuItemPress('AcercaApp')}>
+            <Text style={styles.menuItem}>Acerca de la App</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleMenuItemPress('TerminosC')}>
+            <Text style={styles.menuItem}>Términos y Condiciones</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleMenuItemPress('Contacto')}>
+            <Text style={styles.menuItem}>Contacto</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleMenuItemPress('Ayuda')}>
+            <Text style={styles.menuItem}>Ayuda</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 
-  const BottomBar = ({ setActiveScreen }) => (
+  const BottomBar = () => (
     <View style={styles.bottomBar}>
-      <TouchableOpacity onPress={() => setActiveScreen('Mapa')}>
+      <TouchableOpacity onPress={() => { 
+        if (lastScreen !== 'Mapa') {
+          setActiveScreen('Mapa'); 
+          setLastScreen('Mapa');
+        }
+        setMenuVisible(false); 
+      }}>
         <FontAwesome name="map-marker" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveScreen('Calendario')}>
+      <TouchableOpacity onPress={() => { 
+        if (lastScreen !== 'Recicla') {
+          setActiveScreen('Recicla');
+          setLastScreen('Recicla');
+        }
+        setMenuVisible(false); 
+      }}>
+        <FontAwesome name="leaf" size={24} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => { 
+        if (lastScreen !== 'Calendario') {
+          setActiveScreen('Calendario');
+          setLastScreen('Calendario');
+        }
+        setMenuVisible(false); 
+      }}>
         <FontAwesome name="calendar" size={24} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => { 
+        if (lastScreen !== 'Denuncias') {
+          setActiveScreen('Denuncias');
+          setLastScreen('Denuncias');
+        }
+        setMenuVisible(false); 
+      }}>
+        <FontAwesome name="exclamation-triangle" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
 
+  const handleMenuItemPress = (screen) => {
+    if (screen !== activeScreen) {
+      setActiveScreen(screen);
+      setLastScreen(screen); // Guarda la última pantalla seleccionada
+    }
+    setMenuVisible(false); // Cierra el menú después de seleccionar una opción
+  };
+
+  const renderActiveScreen = () => {
+    switch (activeScreen) {
+      case 'Ajustes':
+        return <AjustesScreen />;
+      case 'Notificaciones':
+        return <NotificacionesScreen />;
+      case 'Recicla':
+        return <ReciclaScreen />;
+      case 'Denuncias':
+        return <DenunciasScreen />;
+      case 'Calendario':
+        return <CalendarioScreen />;
+      case 'AcercaApp':
+        return <AcercaAppScreen />;
+      case 'TerminosC':
+        return <TerminosCScreen />;
+      case 'Contacto':
+        return <ContactoScreen />;
+      case 'Ayuda':
+        return <AyudaScreen />;
+      default:
+        return <MapaScreen />;
+    }
+  };
+
   const HomeScreen = () => {
-    const [activeScreen, setActiveScreen] = useState('Mapa');
-
-    const renderActiveScreen = () => {
-      switch (activeScreen) {
-        case 'Ajustes':
-          return <AjustesScreen />;
-        case 'Notificaciones':
-          return <NotificacionesScreen />;
-        case 'Calendario':
-          return <CalendarioScreen />;
-        default:
-          return <MapaScreen />;
-      }
-    };
-
     return (
       <View style={styles.container}>
-        <TopBar setActiveScreen={setActiveScreen} />  {/* Barra superior fija */}
-        <View style={styles.content}>{renderActiveScreen()}</View>  {/* Contenido dinámico */}
-        <BottomBar setActiveScreen={setActiveScreen} />  {/* Barra inferior fija */}
+        <TopBar />
+        <View style={styles.content}>
+          {renderActiveScreen()}
+        </View>
+        {menuVisible && (
+          <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
+            <View style={styles.overlay} />
+          </TouchableWithoutFeedback>
+        )}
+        <BottomBar />
       </View>
     );
   };
@@ -74,16 +161,16 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerShown: false, // Oculta la cabecera en las pantallas
-            animationEnabled: true, // Habilita animación para las transiciones entre pantallas
-            gestureEnabled: true, // Habilita gestos de deslizamiento
+            headerShown: false,
+            animationEnabled: true,
+            gestureEnabled: true,
           }}
         >
           {isSplashVisible ? (
-            <Stack.Screen 
-              name="Splash" 
-              component={SplashScreen} // Aquí pasamos el componente directamente
-              initialParams={{ onFinish: handleSplashFinish }} // Si es necesario pasar parámetros
+            <Stack.Screen
+              name="Splash"
+              component={SplashScreen}
+              initialParams={{ onFinish: handleSplashFinish }}
             />
           ) : (
             <Stack.Screen name="Home" component={HomeScreen} />
@@ -94,43 +181,71 @@ const App = () => {
   );
 };
 
-// Estilos de la app
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4CAF50',  // Fondo verde igual que las barras
+    backgroundColor: '#4CAF50',
   },
   topBar: {
-    height: 60,  // Ajusta la altura de la barra superior
-    backgroundColor: '#4CAF50',  // Color de fondo de la barra
+    height: 60,
+    backgroundColor: '#4CAF50',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: 30,  // Ajuste para no interferir con los iconos del sistema
-    borderBottomWidth: 2, // Borde inferior
-    borderBottomColor: '#388E3C', // Color del borde (más oscuro que el verde)
+    marginTop: 30,
+    borderBottomWidth: 2,
+    borderBottomColor: '#388E3C',
   },
-  icon: {
-    fontSize: 24,
-    color: 'white',
+  menuDropdown: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    padding: 10,
+    zIndex: 10,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-start',  // Asegura que el contenido se alineé desde el inicio
-    alignItems: 'center',
-    marginTop: 0,  // Elimina el margen superior adicional
+  menuItem: {
+    fontSize: 16,
+    color: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   bottomBar: {
-    height: 60,  // Ajusta la altura de la barra inferior
-    backgroundColor: '#4CAF50',  // Color de fondo de la barra
+    height: 60,
+    backgroundColor: '#4CAF50',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginBottom: 0, // Elimina cualquier margen adicional debajo de la barra inferior
-    borderTopWidth: 2, // Borde superior
-    borderTopColor: '#388E3C', // Color del borde (más oscuro que el verde)
+    borderTopWidth: 2,
+    borderTopColor: '#388E3C',
   },
+  content: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 5,
+  }
 });
 
 export default App;
+
+
+
+
+
+
+
+

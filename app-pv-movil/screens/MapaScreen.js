@@ -1,73 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importa AsyncStorage
-import { puntosVerdes } from './puntosVerdes';  // Asegúrate de que esta ruta sea correcta
+import { puntosVerdes } from './puntosVerdes'; // Asegúrate de que esta ruta sea correcta
 
 const MapaScreen = () => {
   const [region, setRegion] = useState({
-    latitude: -42.47252985044294,  // Coordenadas de Achao
-    longitude: -73.48994022306884,
-    latitudeDelta: 0.0222,  // Ajuste del zoom inicial
+    latitude: -42.471919,  // Nuevas coordenadas de Achao
+    longitude: -73.492904,
+    latitudeDelta: 0.0222,
     longitudeDelta: 0.0221,
   });
 
-  const [mapKey, setMapKey] = useState(0);  // Estado adicional para forzar el reinicio del mapa
+  const [reloadMap, setReloadMap] = useState(0); // Estado para forzar el reinicio del mapa
 
-  // Recuperar datos guardados cuando la app se inicia
   useEffect(() => {
-    const loadRegion = async () => {
-      try {
-        const savedRegion = await AsyncStorage.getItem('region');
-        if (savedRegion) {
-          setRegion(JSON.parse(savedRegion));  // Recupera los datos guardados
-        }
-      } catch (error) {
-        console.error('Error loading region', error);
-      }
-    };
-    loadRegion();
+    // Resetear el estado de la región al iniciarse la app
+    setRegion({
+      latitude: -42.471919,
+      longitude: -73.492904,
+      latitudeDelta: 0.0222,
+      longitudeDelta: 0.0221,
+    });
+
+    // Forzar el reinicio del mapa cada vez que la app se inicie
+    setReloadMap(prevState => prevState + 1);
   }, []);
-
-  // Guardar la región cada vez que el usuario mueva el mapa
-  const handleRegionChange = (newRegion) => {
-    setRegion(newRegion); // Actualiza el estado
-    AsyncStorage.setItem('region', JSON.stringify(newRegion)); // Guarda la nueva región
-  };
-
-  // Resetear el mapa cuando el usuario ingrese a la pantalla
-  const resetMap = () => {
-    setMapKey(prevKey => prevKey + 1);  // Cambiar la clave del mapa para reiniciar el componente
-  };
-
-  useEffect(() => {
-    resetMap();  // Llamamos a resetMap cuando se monta el componente
-  }, []); // Solo se ejecuta una vez cuando el componente se monta
 
   return (
     <View style={styles.container}>
       <MapView
-        key={mapKey}  // Asignar el key para forzar el reinicio
+        key={reloadMap} // Cambiar la clave para reiniciar el mapa
         style={styles.map}
-        initialRegion={region}  // Usa initialRegion para la primera carga
-        onRegionChangeComplete={handleRegionChange}  // Guarda la nueva región
-        zoomEnabled={true}  // Habilita el zoom en el mapa
-        scrollEnabled={true}  // Habilita el desplazamiento del mapa
-        pitchEnabled={true}  // Habilita el ángulo de inclinación
-        rotateEnabled={true}  // Habilita la rotación del mapa
-        mapType="hybrid"  // Mapa híbrido (satélite + calles)
+        initialRegion={region}  // Usamos initialRegion para centrar el mapa en Achao
+        showsUserLocation={true}  // Mostrar la ubicación del usuario
+        zoomEnabled={true}
+        scrollEnabled={true}
+        pitchEnabled={true}
+        rotateEnabled={true}
+        mapType="hybrid"  // Modo híbrido para ver satélite con calles
       >
         {/* Marcadores para los puntos verdes */}
         {puntosVerdes.features.map((punto) => (
           <Marker
-            key={punto.id}  // Usamos el id como clave única
+            key={punto.id}
             coordinate={{
               latitude: punto.geometry.coordinates[1],
               longitude: punto.geometry.coordinates[0],
             }}
             title={punto.properties.name}
             description={punto.properties.description}
-            pinColor="green"  // Cambiar el color del marcador a verde
+            pinColor="green"
           />
         ))}
       </MapView>
@@ -92,4 +74,3 @@ const styles = StyleSheet.create({
 });
 
 export default MapaScreen;
-
