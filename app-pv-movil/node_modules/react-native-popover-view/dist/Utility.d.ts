@@ -1,0 +1,14 @@
+import { RefObject, ComponentClass, Component } from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
+import { Placement, Point, Rect, Size } from './Types';
+declare type RefType = RefObject<number | Component<any, any, any> | ComponentClass<any, any> | null>;
+export declare function getRectForRef(ref: RefType): Promise<Rect>;
+export declare function waitForChange(getFirst: () => Promise<Rect>, getSecond: () => Promise<Rect>): Promise<void>;
+export declare function waitForNewRect(ref: RefType, initialRect: Rect): Promise<Rect>;
+export declare function sizeChanged(a: Size | null, b: Size | null): boolean;
+export declare function rectChanged(a: Rect | null, b: Rect | null): boolean;
+export declare function pointChanged(a: Point, b: Point): boolean;
+export declare function getArrowSize(placement: Placement, arrowStyle: StyleProp<ViewStyle>): Size;
+export declare function getBorderRadius(popoverStyle: StyleProp<ViewStyle>): number;
+export declare function getChangedProps(props: Record<string, unknown>, prevProps: Record<string, unknown>, importantProps: string[]): string[];
+export {};

@@ -1,0 +1,1 @@
+{"version":3,"file":"useKeyboard.d.ts","sourceRoot":"","sources":["../../../src/hooks/useKeyboard.ts"],"names":[],"mappings":"AAAA,OAAO,KAAoC,MAAM,OAAO,CAAC;AAQzD,KAAK,UAAU,GAAG;IAChB,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,EAAE,MAAM,CAAC;IACd,MAAM,EAAE,MAAM,CAAC;CAChB,CAAC;AAaF,wBAAgB,WAAW,CAAC,OAAO,EAAE,OAAO;;;;;;;;eAIjC,SAAS,GAAG,UAAU;aACxB,UAAU;;;;;EAoDlB"}

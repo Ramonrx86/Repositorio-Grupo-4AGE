@@ -1,12 +1,7 @@
-import 'react-native-gesture-handler';
-import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useState, useMemo } from 'react';
+import { View, TouchableOpacity, StyleSheet, Text, FlatList, TouchableWithoutFeedback, Modal, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { View, TouchableOpacity, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// Importar las pantallas de la app
 import MapaScreen from './screens/MapaScreen';
 import CalendarioScreen from './screens/CalendarioScreen';
 import AjustesScreen from './screens/AjustesScreen';
@@ -21,111 +16,79 @@ import AyudaScreen from './screens/AyudaScreen';
 
 const App = () => {
   const [isSplashVisible, setSplashVisible] = useState(true);
-  const [menuVisible, setMenuVisible] = useState(false); // Estado para el menú desplegable
-  const [activeScreen, setActiveScreen] = useState('Mapa'); // Pantalla activa
-  const [lastScreen, setLastScreen] = useState('Mapa'); // Guarda la última pantalla seleccionada
+  const [activeScreen, setActiveScreen] = useState('Home'); // Control de la pantalla activa
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalOpacity] = useState(new Animated.Value(0)); // Para la animación del modal
 
-  const handleSplashFinish = () => {
-    setSplashVisible(false); // Oculta la pantalla de bienvenida después del tiempo definido
+  const handleSplashFinish = () => setSplashVisible(false);
+
+  // Abre el modal con animación
+  const openModal = () => {
+    setModalVisible(true);
+    Animated.timing(modalOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const Stack = createNativeStackNavigator();
+  // Cierra el modal con animación
+  const closeModal = () => {
+    Animated.timing(modalOpacity, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setModalVisible(false));
+  };
 
   const TopBar = () => (
     <View style={styles.topBar}>
-      <TouchableOpacity onPress={() => { 
-        setActiveScreen('Notificaciones'); 
-        setLastScreen('Notificaciones'); // Guarda la pantalla seleccionada
-        setMenuVisible(false); // Cierra el menú cuando se selecciona una opción
-      }}>
+      {/* Botón de notificaciones */}
+      <TouchableOpacity onPress={() => setActiveScreen('Notificaciones')}>
         <FontAwesome name="bell" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setMenuVisible((prev) => !prev)}>
+
+      {/* Botón de abrir Modal */}
+      <TouchableOpacity onPress={openModal}>
         <FontAwesome name="bars" size={24} color="white" />
       </TouchableOpacity>
-      {menuVisible && (
-        <View style={styles.menuDropdown}>
-          <TouchableOpacity onPress={() => handleMenuItemPress('Ajustes')}>
-            <Text style={styles.menuItem}>Configuraciones</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleMenuItemPress('AcercaApp')}>
-            <Text style={styles.menuItem}>Acerca de la App</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleMenuItemPress('TerminosC')}>
-            <Text style={styles.menuItem}>Términos y Condiciones</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleMenuItemPress('Contacto')}>
-            <Text style={styles.menuItem}>Contacto</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleMenuItemPress('Ayuda')}>
-            <Text style={styles.menuItem}>Ayuda</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 
   const BottomBar = () => (
     <View style={styles.bottomBar}>
-      <TouchableOpacity onPress={() => { 
-        if (lastScreen !== 'Mapa') {
-          setActiveScreen('Mapa'); 
-          setLastScreen('Mapa');
-        }
-        setMenuVisible(false); 
-      }}>
+      <TouchableOpacity onPress={() => setActiveScreen('Mapa')}>
         <FontAwesome name="map-marker" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { 
-        if (lastScreen !== 'Recicla') {
-          setActiveScreen('Recicla');
-          setLastScreen('Recicla');
-        }
-        setMenuVisible(false); 
-      }}>
+      <TouchableOpacity onPress={() => setActiveScreen('Recicla')}>
         <FontAwesome name="leaf" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { 
-        if (lastScreen !== 'Calendario') {
-          setActiveScreen('Calendario');
-          setLastScreen('Calendario');
-        }
-        setMenuVisible(false); 
-      }}>
+      <TouchableOpacity onPress={() => setActiveScreen('Calendario')}>
         <FontAwesome name="calendar" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { 
-        if (lastScreen !== 'Denuncias') {
-          setActiveScreen('Denuncias');
-          setLastScreen('Denuncias');
-        }
-        setMenuVisible(false); 
-      }}>
+      <TouchableOpacity onPress={() => setActiveScreen('Denuncias')}>
         <FontAwesome name="exclamation-triangle" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
 
-  const handleMenuItemPress = (screen) => {
-    if (screen !== activeScreen) {
-      setActiveScreen(screen);
-      setLastScreen(screen); // Guarda la última pantalla seleccionada
-    }
-    setMenuVisible(false); // Cierra el menú después de seleccionar una opción
-  };
-
-  const renderActiveScreen = () => {
+  // Maneja las pantallas de contenido según el estado activeScreen
+  const renderScreen = () => {
     switch (activeScreen) {
+      case 'Home':
+        return <MapaScreen />;
+      case 'Mapa':
+        return <MapaScreen />;
+      case 'Recicla':
+        return <ReciclaScreen />;
+      case 'Calendario':
+        return <CalendarioScreen />;
+      case 'Denuncias':
+        return <DenunciasScreen />;
       case 'Ajustes':
         return <AjustesScreen />;
       case 'Notificaciones':
         return <NotificacionesScreen />;
-      case 'Recicla':
-        return <ReciclaScreen />;
-      case 'Denuncias':
-        return <DenunciasScreen />;
-      case 'Calendario':
-        return <CalendarioScreen />;
       case 'AcercaApp':
         return <AcercaAppScreen />;
       case 'TerminosC':
@@ -139,45 +102,57 @@ const App = () => {
     }
   };
 
-  const HomeScreen = () => {
-    return (
-      <View style={styles.container}>
-        <TopBar />
-        <View style={styles.content}>
-          {renderActiveScreen()}
-        </View>
-        {menuVisible && (
-          <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
-            <View style={styles.overlay} />
-          </TouchableWithoutFeedback>
-        )}
-        <BottomBar />
-      </View>
-    );
-  };
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            animationEnabled: true,
-            gestureEnabled: true,
-          }}
+    <View style={styles.container}>
+      {/* Barra superior */}
+      <TopBar />
+
+      {/* Contenido de la pantalla activa */}
+      {renderScreen()}
+
+      {/* Barra inferior */}
+      <BottomBar />
+
+      {/* Modal */}
+      {isModalVisible && (
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            { opacity: modalOpacity },
+          ]}
         >
-          {isSplashVisible ? (
-            <Stack.Screen
-              name="Splash"
-              component={SplashScreen}
-              initialParams={{ onFinish: handleSplashFinish }}
+          <TouchableWithoutFeedback onPress={closeModal}>
+            <View style={styles.modalOverlay} />
+          </TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <FlatList
+              data={[
+                { label: 'Configuraciones', screen: 'Ajustes' },
+                { label: 'Acerca de la App', screen: 'AcercaApp' },
+                { label: 'Términos y Condiciones', screen: 'TerminosC' },
+                { label: 'Contacto', screen: 'Contacto' },
+                { label: 'Ayuda', screen: 'Ayuda' },
+              ]}
+              keyExtractor={(item) => item.screen}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveScreen(item.screen); // Cambia la pantalla activa
+                    closeModal();
+                  }}
+                  style={styles.menuItem}
+                >
+                  <Text style={styles.menuText}>{item.label}</Text>
+                </TouchableOpacity>
+              )}
             />
-          ) : (
-            <Stack.Screen name="Home" component={HomeScreen} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      )}
+    </View>
   );
 };
 
@@ -197,24 +172,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#388E3C',
   },
-  menuDropdown: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    backgroundColor: '#ffffff',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    padding: 10,
-    zIndex: 10,
-  },
-  menuItem: {
-    fontSize: 16,
-    color: '#4CAF50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
   bottomBar: {
     height: 60,
     backgroundColor: '#4CAF50',
@@ -224,23 +181,60 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopColor: '#388E3C',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  overlay: {
+  modalContainer: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    zIndex: 5,
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Fondo oscuro
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    width: '80%',
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  menuItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  menuText: {
+    fontSize: 18,
+    color: '#333',
+  },
+  closeButton: {
+    marginTop: 15,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 export default App;
+
+
+
+
 
 
 
