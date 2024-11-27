@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   logoImage: {
     width: '70%', // Ajusta el ancho al 90% del contenedor
     height: undefined, // Deja que la altura sea ajustada automáticamente para mantener la proporción
-    aspectRatio: 1, // Esto asegura que la relación de aspecto se mantenga (puedes ajustar el aspecto si es necesario)
+    aspectRatio: 1, // Esto asegura que la relación de aspecto se mantenga 
     resizeMode: 'contain', // Mantiene la proporción y ajusta la imagen sin cortarla
   },
 });

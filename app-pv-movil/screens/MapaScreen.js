@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-nati
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location'; // Para manejar los permisos de ubicación
 import PuntosVerdes from './PuntosVerdes'; // Importa el componente de puntos verdes
-import { Ionicons } from '@expo/vector-icons'; // Usamos Ionicons para los iconos
+import { Ionicons } from '@expo/vector-icons'; 
 
 const MapaScreen = () => {
   const [region, setRegion] = useState({
@@ -29,7 +29,7 @@ const MapaScreen = () => {
       descripcion: 'Este es otro punto verde en Achao.',
       categoria: 'basura', // Categoría asignada
     },
-    // Agrega más puntos si es necesario
+    
   ]);
 
   const [showCategories, setShowCategories] = useState(false); // Estado para controlar la visibilidad de los iconos de categorías
@@ -66,7 +66,7 @@ const MapaScreen = () => {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        initialRegion={region} // Usamos initialRegion para centrar el mapa en Achao
+        initialRegion={region} 
         showsUserLocation={true} // Mostrar la ubicación del usuario
         zoomEnabled={true}
         scrollEnabled={true}
@@ -74,7 +74,7 @@ const MapaScreen = () => {
         rotateEnabled={true}
         mapType="hybrid" // Modo híbrido para ver satélite con calles
       >
-        {/* Pasamos los puntos filtrados al componente */}
+        
         <PuntosVerdes puntos={filteredPuntos} />
       </MapView>
 
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   categoryButton: {
     position: 'absolute',
     top: 20,
-    right: 20, // Cambié a "right" para moverlo a la derecha
+    right: 20, 
     backgroundColor: '#41a3ff',
     padding: 10,
     borderRadius: 30,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     position: 'absolute',
     top: 80,
-    right: 20, // Ajusté la posición para que esté en el lado derecho
+    right: 20, 
     backgroundColor: '#FFFFFF',
     padding: 10,
     borderRadius: 10,

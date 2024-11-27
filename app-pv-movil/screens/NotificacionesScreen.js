@@ -17,7 +17,7 @@ const NotificacionesData = [
 { id: '11', title: 'Reciclaje de Residuos Peligrosos', message: 'Recuerda que los puntos verdes no deben usarse para depositar productos peligrosos como pilas o productos químicos.', category: 'Punto de Reciclaje' },
 { id: '12', title: 'Contenedor en Abandono', message: 'El contenedor en la calle 14 lleva varios días sin ser vaciado y está lleno de basura.', category: 'Alerta' },
 { id: '13', title: 'Reciclaje de Cartón', message: 'Se ha habilitado un nuevo punto de reciclaje para cartón en la calle 2, por favor deposítalo allí.', category: 'Punto de Reciclaje' },
-  // Más notificaciones con sus categorías
+
 ];
 
 const NotificacionesScreen = () => {

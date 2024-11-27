@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const ContactoScreen = () => {
-  //Enlaces guardados en una constante
   const contactData = [ 
     {
       id: '1',
@@ -43,7 +42,6 @@ const ContactoScreen = () => {
       icon: 'instagram',
     },
   ];
-//Marca error en caso de haber algún problema con el enlace
   const handlePress = (link) => {
     Linking.openURL(link).catch(() => {
       Alert.alert('Error', 'No se pudo abrir el enlace.');

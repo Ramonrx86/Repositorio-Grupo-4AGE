@@ -37,7 +37,7 @@ export default function ReciclaScreen() {
         <FontAwesome name={item.icon} size={24} color="#41a3ff" />  
         <Text style={estilos.titulo}>{item.title}</Text>
       </View>
-      <Text style={estilos.contenido}>{item.content}</Text>  {/* Asegúrate de que el texto esté dentro de <Text> */}
+      <Text style={estilos.contenido}>{item.content}</Text>  
     </View>
   );
 
