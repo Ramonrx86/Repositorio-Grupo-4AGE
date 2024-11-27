@@ -17,7 +17,7 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <LinearGradient
-      colors={darkMode ? ['#232526', '#414345'] : ['#a8e6cf', '#dcedc1']}
+      colors={darkMode ? ['#232526', '#414345'] : ['#f5f5f5', '#f5f5f5']}
       style={styles.gradientBackground}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -94,17 +94,6 @@ export default function SettingsScreen({ navigation }) {
             thumbTintColor="#007AFF"
           />
           <Text style={{ fontSize: displayedFontSize, color: darkMode ? '#fff' : '#000' }}>Aa</Text>
-        </View>
-
-        {/* Sección de Información adicional */}
-        <View style={styles.infoSection}>
-          <Button title="Acerca de la App" onPress={() => navigation.navigate('AboutApp')} />
-          <View style={styles.buttonSpacing} />
-          <Button title="Términos y Condiciones" onPress={() => navigation.navigate('TermsConditions')} />
-          <View style={styles.buttonSpacing} />
-          <Button title="contacto" onPress={() => navigation.navigate('contacto')} />
-          <View style={styles.buttonSpacing} />
-          <Button title="Ayuda" onPress={() => navigation.navigate('Help')} />
         </View>
       </ScrollView>
     </LinearGradient>

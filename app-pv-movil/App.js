@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, FlatList, TouchableWithoutFeedback, Modal, Animated } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Animated, TouchableOpacity, FlatList, Text, TouchableWithoutFeedback, Dimensions, StatusBar, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 import MapaScreen from './screens/MapaScreen';
@@ -12,67 +12,102 @@ import SplashScreen from './screens/Bienvenida';
 import AcercaAppScreen from './screens/AcercaAppScreen';
 import TerminosCScreen from './screens/TerminosCScreen';
 import ContactoScreen from './screens/ContactoScreen';
-import AyudaScreen from './screens/AyudaScreen';
 
 const App = () => {
   const [isSplashVisible, setSplashVisible] = useState(true);
-  const [activeScreen, setActiveScreen] = useState('Home'); // Control de la pantalla activa
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [modalOpacity] = useState(new Animated.Value(0)); // Para la animación del modal
+  const [activeScreen, setActiveScreen] = useState('Home');
+  const [isMenuVisible, setMenuVisible] = useState(false);
+  const menuTranslateX = useState(new Animated.Value(-Dimensions.get('window').width))[0];
 
-  const handleSplashFinish = () => setSplashVisible(false);
+  useEffect(() => {
+    const splashTimeout = setTimeout(() => {
+      setSplashVisible(false);
+    }, 3000);
 
-  // Abre el modal con animación
-  const openModal = () => {
-    setModalVisible(true);
-    Animated.timing(modalOpacity, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
+    return () => clearTimeout(splashTimeout);
+  }, []);
 
-  // Cierra el modal con animación
-  const closeModal = () => {
-    Animated.timing(modalOpacity, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => setModalVisible(false));
+  const toggleMenu = () => {
+    if (isMenuVisible) {
+      Animated.timing(menuTranslateX, {
+        toValue: -Dimensions.get('window').width,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setMenuVisible(false));
+    } else {
+      setMenuVisible(true);
+      Animated.timing(menuTranslateX, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   const TopBar = () => (
-    <View style={styles.topBar}>
-      {/* Botón de notificaciones */}
-      <TouchableOpacity onPress={() => setActiveScreen('Notificaciones')}>
-        <FontAwesome name="bell" size={24} color="white" />
-      </TouchableOpacity>
-
-      {/* Botón de abrir Modal */}
-      <TouchableOpacity onPress={openModal}>
-        <FontAwesome name="bars" size={24} color="white" />
-      </TouchableOpacity>
+    <View style={styles.topBarWrapper}>
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={toggleMenu} style={styles.iconButton}>
+          <FontAwesome name="bars" size={24} color={activeScreen === 'Home' ? '#FFD700' : 'white'} />
+          <Text style={[styles.iconText, { color: activeScreen === 'Home' ? '#FFD700' : 'white' }]}>Menú</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActiveScreen('Notificaciones')} style={styles.iconButton}>
+          <FontAwesome name="bell" size={24} color={activeScreen === 'Notificaciones' ? '#FFD700' : 'white'} />
+          <Text style={[styles.iconText, { color: activeScreen === 'Notificaciones' ? '#FFD700' : 'white' }]}>Notificaciones</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   const BottomBar = () => (
     <View style={styles.bottomBar}>
-      <TouchableOpacity onPress={() => setActiveScreen('Mapa')}>
-        <FontAwesome name="map-marker" size={24} color="white" />
+      <TouchableOpacity 
+        onPress={() => setActiveScreen('Mapa')} 
+        style={styles.iconButton}
+      >
+        <FontAwesome 
+          name="map-marker" 
+          size={24} 
+          color={activeScreen === 'Mapa' ? '#FFD700' : 'white'} // Color dorado cuando es la pestaña activa
+        />
+        <Text style={styles.iconText}>Mapa</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveScreen('Recicla')}>
-        <FontAwesome name="leaf" size={24} color="white" />
+      <TouchableOpacity 
+        onPress={() => setActiveScreen('Recicla')} 
+        style={styles.iconButton}
+      >
+        <FontAwesome 
+          name="leaf" 
+          size={24} 
+          color={activeScreen === 'Recicla' ? '#FFD700' : 'white'} // Color dorado cuando es la pestaña activa
+        />
+        <Text style={styles.iconText}>Recicla</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveScreen('Calendario')}>
-        <FontAwesome name="calendar" size={24} color="white" />
+      <TouchableOpacity 
+        onPress={() => setActiveScreen('Calendario')} 
+        style={styles.iconButton}
+      >
+        <FontAwesome 
+          name="calendar" 
+          size={24} 
+          color={activeScreen === 'Calendario' ? '#FFD700' : 'white'} // Color dorado cuando es la pestaña activa
+        />
+        <Text style={styles.iconText}>Calendario</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveScreen('Denuncias')}>
-        <FontAwesome name="exclamation-triangle" size={24} color="white" />
+      <TouchableOpacity 
+        onPress={() => setActiveScreen('Denuncias')} 
+        style={styles.iconButton}
+      >
+        <FontAwesome 
+          name="exclamation-triangle" 
+          size={24} 
+          color={activeScreen === 'Denuncias' ? '#FFD700' : 'white'} // Color dorado cuando es la pestaña activa
+        />
+        <Text style={styles.iconText}>Denuncias</Text>
       </TouchableOpacity>
     </View>
   );
 
-  // Maneja las pantallas de contenido según el estado activeScreen
   const renderScreen = () => {
     switch (activeScreen) {
       case 'Home':
@@ -95,8 +130,6 @@ const App = () => {
         return <TerminosCScreen />;
       case 'Contacto':
         return <ContactoScreen />;
-      case 'Ayuda':
-        return <AyudaScreen />;
       default:
         return <MapaScreen />;
     }
@@ -104,53 +137,52 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      {/* Barra superior */}
-      <TopBar />
-
-      {/* Contenido de la pantalla activa */}
-      {renderScreen()}
-
-      {/* Barra inferior */}
-      <BottomBar />
-
-      {/* Modal */}
-      {isModalVisible && (
-        <Animated.View
-          style={[
-            styles.modalContainer,
-            { opacity: modalOpacity },
-          ]}
-        >
-          <TouchableWithoutFeedback onPress={closeModal}>
-            <View style={styles.modalOverlay} />
-          </TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={[
-                { label: 'Configuraciones', screen: 'Ajustes' },
-                { label: 'Acerca de la App', screen: 'AcercaApp' },
-                { label: 'Términos y Condiciones', screen: 'TerminosC' },
-                { label: 'Contacto', screen: 'Contacto' },
-                { label: 'Ayuda', screen: 'Ayuda' },
-              ]}
-              keyExtractor={(item) => item.screen}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveScreen(item.screen); // Cambia la pantalla activa
-                    closeModal();
-                  }}
-                  style={styles.menuItem}
-                >
-                  <Text style={styles.menuText}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Cerrar</Text>
-            </TouchableOpacity>
+      <StatusBar barStyle="light-content" translucent={true} backgroundColor="transparent" />
+      {isSplashVisible ? (
+        <SplashScreen />
+      ) : (
+        <>
+          <TopBar />
+          <View style={styles.content}>
+            {renderScreen()}
           </View>
-        </Animated.View>
+          <BottomBar />
+          <Animated.View
+            style={[
+              styles.menuContainer,
+              { transform: [{ translateX: menuTranslateX }] },
+            ]}
+          >
+            <TouchableWithoutFeedback onPress={toggleMenu}>
+              <View style={styles.menuOverlay} />
+            </TouchableWithoutFeedback>
+            <View style={styles.menuContent}>
+              <FlatList
+                data={[
+                  { label: 'Configuraciones', screen: 'Ajustes' },
+                  { label: 'Acerca de la App', screen: 'AcercaApp' },
+                  { label: 'Términos y Condiciones', screen: 'TerminosC' },
+                  { label: 'Contacto', screen: 'Contacto' },
+                ]}
+                keyExtractor={(item) => item.screen}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveScreen(item.screen);
+                      toggleMenu();
+                    }}
+                    style={styles.menuItem}
+                  >
+                    <Text style={styles.menuText}>{item.label}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+            <View style={styles.logoContainer}>
+              <Image source={require('./assets/logo.png')} style={styles.logoImage} />
+            </View>
+          </Animated.View>
+        </>
       )}
     </View>
   );
@@ -159,87 +191,93 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#000000',
+  },
+  topBarWrapper: {
+    marginTop: 30,
+    backgroundColor: 'black',
   },
   topBar: {
     height: 60,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#41a3ff',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginTop: 30,
-    borderBottomWidth: 2,
+    paddingHorizontal: 30,
+    borderBottomWidth: 0,
     borderBottomColor: '#388E3C',
+    zIndex: 2,
+  },
+  iconButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  iconText: {
+    marginTop: 5,
+    color: 'white',
+    fontSize: 12,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   bottomBar: {
     height: 60,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#41a3ff',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    borderTopWidth: 2,
+    borderTopWidth: 0,
     borderTopColor: '#388E3C',
+    zIndex: 2,
   },
-  modalContainer: {
+  menuContainer: {
+    position: 'absolute',
+    top: 80,
+    bottom: 60,
+    left: 0,
+    width: Dimensions.get('window').width * 0.7,
+    backgroundColor: '#aed6f1',
+    zIndex: 1,
+  },
+  menuOverlay: {
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
     bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    left: Dimensions.get('window').width * 0.8,
     right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Fondo oscuro
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 0,
   },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    width: '80%',
+  menuContent: {
+    flex: 1,
     padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 5,
   },
   menuItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    padding: 15,
+    marginBottom: 10,
+    backgroundColor: '#41a3ff',
+    borderRadius: 5,
   },
   menuText: {
-    fontSize: 18,
-    color: '#333',
-  },
-  closeButton: {
-    marginTop: 15,
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    textAlign: 'center',
     color: 'white',
-    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  logoContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoImage: {
+    width: '70%', // Ajusta el ancho al 90% del contenedor
+    height: undefined, // Deja que la altura sea ajustada automáticamente para mantener la proporción
+    aspectRatio: 1, // Esto asegura que la relación de aspecto se mantenga (puedes ajustar el aspecto si es necesario)
+    resizeMode: 'contain', // Mantiene la proporción y ajusta la imagen sin cortarla
   },
 });
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
 

@@ -53,7 +53,7 @@ const ContactoScreen = () => {
   const renderContactoItem = ({ item }) => (
     <Card style={styles.card}>
       <View style={styles.cardContent}>
-        <Icon name={item.icon} size={46} color="#4caf50" style={styles.icon} />
+        <Icon name={item.icon} size={46} color="#41a3ff" style={styles.icon} />
         <View style={styles.cardText}>
           <Text style={styles.cardTitle}>{item.title}</Text>
           <Text style={styles.cardDescription}>{item.description}</Text>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    marginTop: 10,
+    marginTop: 0,
     margin: 8,
     backgroundColor: '#f5f5f5',
   },
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-    color: '#333',
+    color: '#41a3ff',
   },
   list: {
     paddingBottom: 16,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     margin: 6,
   },
   button: {
-    backgroundColor: '#4caf50',
+    backgroundColor: '#41a3ff',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,

@@ -7,6 +7,16 @@ const NotificacionesData = [
   { id: '1', title: 'Reciclaje de Plástico', message: 'Recuerda que el punto verde de la calle 10 está disponible para reciclar plástico.', category: 'Punto de Reciclaje' },
   { id: '2', title: 'Reciclaje de Vidrio', message: 'El punto de reciclaje en la calle 9 ha sido actualizado con más contenedores.', category: 'Punto de reciclaje' },
   { id: '3', title: 'Alerta de punto verde', message: 'El punto de reciclaje en la calle 8 ha sido destruido.', category: 'Alerta' },
+  { id: '4', title: 'Reciclaje de Papel', message: 'El punto verde de la calle 5 está listo para recibir papel y cartón reciclable.', category: 'Punto de Reciclaje' },
+{ id: '5', title: 'Reciclaje de Latas', message: 'Recuerda depositar las latas en el punto de reciclaje de la calle 7.', category: 'Punto de Reciclaje' },
+{ id: '6', title: 'Reciclaje de Electrodomésticos', message: 'En la calle 12 se ha habilitado un punto especial para la disposición de electrodomésticos viejos.', category: 'Punto de Reciclaje' },
+{ id: '7', title: 'Reciclaje de Ropa', message: 'Nuevo punto verde en la calle 3 para recolectar ropa usada para reciclar.', category: 'Punto de Reciclaje' },
+{ id: '8', title: 'Alerta de Basura', message: 'Se ha reportado un contenedor desbordado en la calle 6. Se solicita limpieza inmediata.', category: 'Alerta' },
+{ id: '9', title: 'Contenedor de Plásticos Dañado', message: 'El contenedor de plásticos en la calle 4 está dañado y no puede ser utilizado.', category: 'Alerta' },
+{ id: '10', title: 'Contenedor lleno de Residuos Orgánicos', message: 'El contenedor de reciclaje de la calle 10 está siendo utilizado para residuos orgánicos, lo cual no es adecuado.', category: 'Alerta' },
+{ id: '11', title: 'Reciclaje de Residuos Peligrosos', message: 'Recuerda que los puntos verdes no deben usarse para depositar productos peligrosos como pilas o productos químicos.', category: 'Punto de Reciclaje' },
+{ id: '12', title: 'Contenedor en Abandono', message: 'El contenedor en la calle 14 lleva varios días sin ser vaciado y está lleno de basura.', category: 'Alerta' },
+{ id: '13', title: 'Reciclaje de Cartón', message: 'Se ha habilitado un nuevo punto de reciclaje para cartón en la calle 2, por favor deposítalo allí.', category: 'Punto de Reciclaje' },
   // Más notificaciones con sus categorías
 ];
 
@@ -36,7 +46,7 @@ const NotificacionesScreen = () => {
           <FontAwesome
             name="bell"
             size={24}
-            color={isRead ? 'green' : 'gray'}
+            color={isRead ? '#d4ac0d' : 'gray'}
           />
         </Pressable>
       </Card>
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    marginTop: 26,
+    marginTop: 0,
     paddingTop: 30,
     backgroundColor: '#f5f5f5',
   },
@@ -67,14 +77,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333',
+    color: '#41a3ff',
     textAlign: 'center',
   },
   card: {
     marginBottom: 16,
     borderRadius: 10,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
+    backgroundColor: '#41a3ff',
+    shadowColor: '#ffffff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
@@ -83,13 +93,15 @@ const styles = StyleSheet.create({
   
   boldTitle: {
     fontWeight: 'bold', //Aplicar negrita al título de las notificaciones
+    color: '#ffffff',
   },
   italicSubtitle: {
     fontStyle: 'italic', //Aplicar cursiva al subtítulo de cada notificación (categoría)
+    color: '#f5f5f5',
   },
   messageText: {
     fontSize: 16,
-    color: '#555',
+    color: '#ffffff',
   },
   bellIconContainer: {
     alignSelf: 'flex-end', //Icono campanita

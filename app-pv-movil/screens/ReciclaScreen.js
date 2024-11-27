@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';  // Asegúrate de importar correctamente FontAwesome
 
 export default function ReciclaScreen() {
   const tips = [
     {
-      icon: 'newspaper', 
+      icon: 'paper-plane',  // Icono para reciclaje de papel
       title: 'Reciclaje de Papel',
       content: 'Asegúrate de separar el papel limpio. No se debe reciclar papel sucio o con grasa (como cartones de pizza).',
     },
     {
-      icon: 'recycle', 
+      icon: 'recycle',  // Icono para reciclaje de botellas plásticas
       title: 'Botellas Plásticas',
       content: 'Limpia las botellas plásticas antes de reciclarlas. Asegúrate de quitar la tapa y reciclarla por separado.',
     },
@@ -20,12 +20,12 @@ export default function ReciclaScreen() {
       content: 'No se debe reciclar papel que esté mojado o utilizado para higiene, ya que no se puede procesar adecuadamente.',
     },
     {
-      icon: 'glass-mug',
+      icon: 'glass',  // Icono para envases de vidrio
       title: 'Envases de Vidrio',
       content: 'Recicla botellas y frascos de vidrio, pero asegúrate de que estén vacíos y limpios. No reciclar cristales rotos o cerámica.',
     },
     {
-      icon: 'bottle-water', 
+      icon: 'recycle',  // Icono para botellas PET (reciclaje en general)
       title: 'Botellas de Plástico PET',
       content: 'Las botellas de PET (como las de bebidas) deben ser recicladas correctamente. Aplástalas para ahorrar espacio.',
     },
@@ -34,10 +34,10 @@ export default function ReciclaScreen() {
   const renderTip = ({ item }) => (
     <View style={estilos.tarjeta}>
       <View style={estilos.encabezadoTarjeta}>
-        <FontAwesome5 name={item.icon} size={24} color="#4CAF50" />
+        <FontAwesome name={item.icon} size={24} color="#41a3ff" />  
         <Text style={estilos.titulo}>{item.title}</Text>
       </View>
-      <Text style={estilos.contenido}>{item.content}</Text>
+      <Text style={estilos.contenido}>{item.content}</Text>  {/* Asegúrate de que el texto esté dentro de <Text> */}
     </View>
   );
 
@@ -56,7 +56,7 @@ export default function ReciclaScreen() {
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
-    marginTop: 26,
+    marginTop: 0,
     backgroundColor: '#F3F4F6',
   },
   encabezado: {
@@ -64,7 +64,7 @@ const estilos = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 15,
-    color: '#4CAF50',
+    color: '#41a3ff',
   },
   tarjeta: {
     backgroundColor: '#FFFFFF',
@@ -87,10 +87,12 @@ const estilos = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
-    color: '#333',
+    color: '#41a3ff',
   },
   contenido: {
     fontSize: 16,
     color: '#666',
   },
 });
+
+
