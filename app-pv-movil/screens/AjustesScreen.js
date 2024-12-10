@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Colors from './Colorstyle';
 import { View, Text, Switch, StyleSheet, Dimensions, Button, ScrollView } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,13 +8,28 @@ export default function SettingsScreen({ navigation }) {
   const [darkMode, setDarkMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [fontSize, setFontSize] = useState(14);
-  const [displayedFontSize, setDisplayedFontSize] = useState(fontSize);  // Estado temporal
+  const [displayedFontSize, setDisplayedFontSize] = useState(fontSize);
   const [highContrast, setHighContrast] = useState(false);
-  const [notificationsSound, setNotificationsSound] = useState(false);  // Notificaciones sonoras
-  const [notificationsVibration, setNotificationsVibration] = useState(false);  // Vibración
+  const [notificationsSound, setNotificationsSound] = useState(false);
+  const [notificationsVibration, setNotificationsVibration] = useState(false);
+
+  const [primaryColor, setPrimaryColor] = useState(Colors.primary);
+
+  useEffect(() => {
+    // Cambiar el color primario cuando cambie el tema
+    if (darkMode) {
+      setPrimaryColor('#fff000'); // Color para tema oscuro
+    } else {
+      setPrimaryColor('#11a3ff'); // Color para tema claro
+    }
+  }, [darkMode]); // El efecto se ejecutará cada vez que cambie darkMode
 
   const disabledStyle = notificationsEnabled ? {} : { opacity: 0.5 };
   const disabledSwitch = notificationsEnabled ? {} : { disabled: true };
+
+  const handleSave = () => {
+    alert('Configuraciones guardadas!');
+  };
 
   return (
     <LinearGradient
@@ -27,7 +43,7 @@ export default function SettingsScreen({ navigation }) {
           <Switch
             value={darkMode}
             onValueChange={(value) => setDarkMode(value)}
-            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            thumbColor={darkMode ? '#fff' : primaryColor}
             trackColor={{ false: '#767577', true: '#81b0ff' }}
           />
         </View>
@@ -38,7 +54,7 @@ export default function SettingsScreen({ navigation }) {
           <Switch
             value={highContrast}
             onValueChange={(value) => setHighContrast(value)}
-            thumbColor={highContrast ? '#000' : '#007AFF'}
+            thumbColor={highContrast ? '#000' : primaryColor}
             trackColor={{ false: '#767577', true: '#ffeb3b' }}
           />
         </View>
@@ -49,7 +65,7 @@ export default function SettingsScreen({ navigation }) {
           <Switch
             value={notificationsEnabled}
             onValueChange={(value) => setNotificationsEnabled(value)}
-            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            thumbColor={darkMode ? '#fff' : primaryColor}
             trackColor={{ false: '#767577', true: '#81b0ff' }}
           />
         </View>
@@ -60,7 +76,7 @@ export default function SettingsScreen({ navigation }) {
           <Switch
             value={notificationsSound}
             onValueChange={(value) => setNotificationsSound(value)}
-            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            thumbColor={darkMode ? '#fff' : primaryColor}
             trackColor={{ false: '#767577', true: '#81b0ff' }}
             {...disabledSwitch}
           />
@@ -72,7 +88,7 @@ export default function SettingsScreen({ navigation }) {
           <Switch
             value={notificationsVibration}
             onValueChange={(value) => setNotificationsVibration(value)}
-            thumbColor={darkMode ? '#fff' : '#007AFF'}
+            thumbColor={darkMode ? '#fff' : primaryColor}
             trackColor={{ false: '#767577', true: '#81b0ff' }}
             {...disabledSwitch}
           />
@@ -85,15 +101,20 @@ export default function SettingsScreen({ navigation }) {
             style={styles.slider}
             minimumValue={10}
             maximumValue={30}
-            step={2}  // Incremento de 2 para 10 niveles
+            step={2}
             value={fontSize}
-            onValueChange={(value) => setDisplayedFontSize(value)}  // Actualiza el estado temporal mientras se desliza
-            onSlidingComplete={(value) => setFontSize(value)}  // Ajusta el tamaño final al completar
-            minimumTrackTintColor="#007AFF"
+            onValueChange={(value) => setDisplayedFontSize(value)}
+            onSlidingComplete={(value) => setFontSize(value)}
+            minimumTrackTintColor={primaryColor}
             maximumTrackTintColor={darkMode ? '#fff' : '#000'}
-            thumbTintColor="#007AFF"
+            thumbTintColor={primaryColor}
           />
           <Text style={{ fontSize: displayedFontSize, color: darkMode ? '#fff' : '#000' }}>Aa</Text>
+        </View>
+
+        {/* Botón Guardar */}
+        <View style={styles.buttonSpacing}>
+          <Button title="Guardar" onPress={handleSave} color={primaryColor} />
         </View>
       </ScrollView>
     </LinearGradient>
@@ -111,7 +132,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 40,  // Para permitir espacio para deslizar al final
+    paddingBottom: 40,
   },
   settingRow: {
     flexDirection: 'row',
@@ -135,6 +156,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   buttonSpacing: {
-    marginBottom: 10, // Espacio entre los botones
+    marginBottom: 10,
   }
 });

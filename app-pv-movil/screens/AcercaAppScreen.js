@@ -1,4 +1,5 @@
 import React from 'react';
+import Colors from './Colorstyle';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 export default function AcercaAppScreen() {
@@ -24,7 +25,8 @@ export default function AcercaAppScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.fondo, 
+
   },
   scrollContent: {
     padding: 20,
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#41a3ff',
+    color: Colors.primary,
     textAlign: 'center',
   },
   text: {

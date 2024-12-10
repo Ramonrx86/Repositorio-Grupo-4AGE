@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Colors from './Colorstyle';
 import { Animated, View, StyleSheet, Image } from 'react-native';
 
 const SplashScreen = ({ onFinish }) => {
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#aed6f1',
+    backgroundColor: Colors.fondo, 
   },
   logo: {
     width: '80%', // Ajusta el tamaño para asegurarte de que el logo no esté recortado

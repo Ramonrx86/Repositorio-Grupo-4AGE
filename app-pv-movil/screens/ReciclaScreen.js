@@ -1,4 +1,5 @@
 import React from 'react';
+import Colors from './Colorstyle';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';  // Asegúrate de importar correctamente FontAwesome
 
@@ -34,7 +35,7 @@ export default function ReciclaScreen() {
   const renderTip = ({ item }) => (
     <View style={estilos.tarjeta}>
       <View style={estilos.encabezadoTarjeta}>
-        <FontAwesome name={item.icon} size={24} color="#41a3ff" />  
+        <FontAwesome name={item.icon} size={24} color={Colors.primary} />  
         <Text style={estilos.titulo}>{item.title}</Text>
       </View>
       <Text style={estilos.contenido}>{item.content}</Text>  
@@ -57,14 +58,14 @@ const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
     marginTop: 0,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#eeeeee',
   },
   encabezado: {
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 15,
-    color: '#41a3ff',
+    color: Colors.primary, 
   },
   tarjeta: {
     backgroundColor: '#FFFFFF',
@@ -87,7 +88,7 @@ const estilos = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
-    color: '#41a3ff',
+    color: Colors.primary, 
   },
   contenido: {
     fontSize: 16,

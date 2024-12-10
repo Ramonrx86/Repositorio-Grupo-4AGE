@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
-import MapView from 'react-native-maps';
-import * as Location from 'expo-location'; // Para manejar los permisos de ubicación
-import PuntosVerdes from './PuntosVerdes'; // Importa el componente de puntos verdes
-import { Ionicons } from '@expo/vector-icons'; 
+import { View, StyleSheet, Dimensions, Text, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { db } from './firebase'; // Importa la configuración de Firebase
+import { collection, getDocs } from 'firebase/firestore'; // Importa las funciones necesarias de Firestore
 
 const MapaScreen = () => {
   const [region, setRegion] = useState({
@@ -13,132 +12,144 @@ const MapaScreen = () => {
     longitudeDelta: 0.0221,
   });
 
-  const [hasLocationPermission, setHasLocationPermission] = useState(null); // Estado para gestionar los permisos
-  const [puntosVerdes, setPuntosVerdes] = useState([
-    {
-      latitude: -42.471919,
-      longitude: -73.492904,
-      titulo: 'Punto Verde 1',
-      descripcion: 'Este es un punto verde en Achao.',
-      categoria: 'reciclaje', // Categoría asignada
-    },
-    {
-      latitude: -42.470000,
-      longitude: -73.490000,
-      titulo: 'Punto Verde 2',
-      descripcion: 'Este es otro punto verde en Achao.',
-      categoria: 'basura', // Categoría asignada
-    },
-    
-  ]);
-
-  const [showCategories, setShowCategories] = useState(false); // Estado para controlar la visibilidad de los iconos de categorías
-  const [selectedCategory, setSelectedCategory] = useState(null); // Estado para filtrar por categoría
+  const [puntosVerdes, setPuntosVerdes] = useState([]); // Aquí se guardarán los puntos verdes obtenidos de Firestore
+  const [error, setError] = useState(null); // Para manejar y mostrar cualquier error
+  const [selectedPoint, setSelectedPoint] = useState(null); // Para almacenar el punto seleccionado
 
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        setHasLocationPermission(true);
-      } else {
-        setHasLocationPermission(false);
-        console.log("Permiso de ubicación denegado");
+    const fetchPuntos = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "contenedores"));
+        const puntos = [];
+
+        if (querySnapshot.empty) {
+          setError('No se encontraron puntos en la base de datos');
+        }
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          console.log("Datos del documento:", data);
+
+          const gps = data.gps;
+
+          if (gps && gps.latitude && gps.longitude) {
+            const latitud = gps.latitude;
+            const longitud = gps.longitude;
+
+            if (!isNaN(latitud) && !isNaN(longitud)) {
+              puntos.push({
+                ...data,
+                latitud,
+                longitud,
+              });
+            } else {
+              console.log("Coordenadas no válidas", gps);
+            }
+          } else {
+            console.log("Campo gps no encontrado o mal formato", gps);
+          }
+        });
+
+        setPuntosVerdes(puntos); // Actualiza el estado con los puntos obtenidos
+      } catch (error) {
+        console.log('Error al obtener los puntos:', error);
+        setError('Error al cargar los puntos desde Firebase');
       }
     };
 
-    requestLocationPermission();
+    fetchPuntos(); // Cargar los puntos verdes al inicio
   }, []);
 
-  if (hasLocationPermission === null) {
-    return <View style={styles.container}><Text>Cargando...</Text></View>;
-  }
+  // Función para obtener las categorías activas
+  const getCategorias = (punto) => {
+    const categoriasActivas = [];
+    if (punto) {
+      if (punto.b === 1) categoriasActivas.push('Botellas de Plástico');
+      if (punto.c === 1) categoriasActivas.push('Cartón');
+      if (punto.l === 1) categoriasActivas.push('Latas de Aluminio');
+      if (punto.p === 1) categoriasActivas.push('Papel');
+      if (punto.v === 1) categoriasActivas.push('Vidrio');
+      if (punto.o === 1) categoriasActivas.push('Orgánico');
+    }
 
-  if (hasLocationPermission === false) {
-    return <View style={styles.container}><Text>No se tiene acceso a la ubicación.</Text></View>;
-  }
+    return categoriasActivas;
+  };
 
-  // Filtra los puntos según la categoría seleccionada
-  const filteredPuntos = puntosVerdes.filter(punto => 
-    selectedCategory ? punto.categoria === selectedCategory : true
-  );
+  // Función para manejar la selección de un punto
+  const handleMarkerPress = (punto) => {
+    setSelectedPoint(punto);
+  };
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={region} 
-        showsUserLocation={true} // Mostrar la ubicación del usuario
-        zoomEnabled={true}
-        scrollEnabled={true}
-        pitchEnabled={true}
-        rotateEnabled={true}
-        mapType="hybrid" // Modo híbrido para ver satélite con calles
-      >
-        
-        <PuntosVerdes puntos={filteredPuntos} />
-      </MapView>
+      {error && <Text>{error}</Text>}
+      {puntosVerdes.length > 0 ? (
+        <MapView
+          style={styles.map}
+          region={region}
+          showsUserLocation={true}
+          zoomEnabled={true}
+          scrollEnabled={true}
+          mapType="satellite"
+        >
+          {puntosVerdes.map((punto, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: punto.latitud,
+                longitude: punto.longitud,
+              }}
+              title={punto.titulo}
+              description={punto.descripcion}
+              onPress={() => handleMarkerPress(punto)} // Al presionar el marcador
+            />
+          ))}
+        </MapView>
+      ) : (
+        <Text>No hay puntos disponibles para mostrar.</Text>
+      )}
 
-      {/* Botón para desplegar las categorías */}
-      <TouchableOpacity
-        style={styles.categoryButton}
-        onPress={() => setShowCategories(!showCategories)}
-      >
-        <Ionicons name="filter" size={30} color="white" />
-      </TouchableOpacity>
+      {/* Modal para mostrar los detalles del punto */}
+      {selectedPoint && (
+        <Modal
+          visible={true}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setSelectedPoint(null)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{selectedPoint.titulo}</Text>
+              <Text style={styles.modalDescription}>{selectedPoint.descripcion}</Text>
 
-      {/* Iconos de categorías desplegables */}
-      {showCategories && (
-        <View style={styles.categoriesContainer}>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('reciclaje')}
-          >
-            <Ionicons name="recycle" size={30} color="green" /> {/* Icono de reciclaje */}
-            <Text style={styles.categoryText}>Reciclaje</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('basura')}
-          >
-            <Ionicons name="trash" size={30} color="red" />
-            <Text style={styles.categoryText}>Basura</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('papel')}
-          >
-            <Ionicons name="document-text" size={30} color="brown" />
-            <Text style={styles.categoryText}>Papel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('carton')}
-          >
-            <Ionicons name="card" size={30} color="tan" />
-            <Text style={styles.categoryText}>Cartón</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('aluminio')}
-          >
-            <Ionicons name="fitness" size={30} color="silver" />
-            <Text style={styles.categoryText}>Aluminio</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('vidrio')}
-          >
-            <Ionicons name="wine" size={30} color="blue" />
-            <Text style={styles.categoryText}>Vidrio</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.categoryIcon}
-            onPress={() => setSelectedCategory('organico')}
-          >
-            <Ionicons name="leaf" size={30} color="green" />
-            <Text style={styles.categoryText}>Orgánico</Text>
-          </TouchableOpacity>
-        </View>
+              <Text style={styles.modalCategoriesTitle}>Categorías:</Text>
+              <ScrollView style={styles.categoriesContainer}>
+                {getCategorias(selectedPoint).length > 0 ? (
+                  getCategorias(selectedPoint).map((categoria, index) => (
+                    <Text key={index} style={styles.categoryItem}>{categoria}</Text>
+                  ))
+                ) : (
+                  <Text>No hay categorías activas.</Text>
+                )}
+              </ScrollView>
+
+              {/* Mostrar imagen si existe */}
+              {selectedPoint.imagen && (
+                <Image
+                  source={{ uri: selectedPoint.imagen }}
+                  style={styles.image}
+                />
+              )}
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setSelectedPoint(null)}
+              >
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       )}
     </View>
   );
@@ -158,36 +169,55 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-  categoryButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20, 
-    backgroundColor: '#41a3ff',
-    padding: 10,
-    borderRadius: 30,
-    zIndex: 1,
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalDescription: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  modalCategoriesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   categoriesContainer: {
-    position: 'absolute',
-    top: 80,
-    right: 20, 
-    backgroundColor: '#FFFFFF',
+    marginBottom: 10,
+  },
+  categoryItem: {
+    fontSize: 14,
+    color: '#555',
+  },
+  image: {
+    width: '100%',  // Ocupa todo el ancho disponible del contenedor
+    height: 0,      // Establece el alto en 0 inicialmente
+    paddingBottom: '56.25%', // Este valor es para mantener la relación 16:9, ajusta según el tipo de imagen
+    resizeMode: 'contain', // Mantiene las proporciones sin distorsionar
+  },
+  closeButton: {
+    backgroundColor: '#4CAF50',
     padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    zIndex: 1,
+    borderRadius: 5,
+    marginTop: 10,
   },
-  categoryIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  categoryText: {
-    marginLeft: 10,
-    fontSize: 16,
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

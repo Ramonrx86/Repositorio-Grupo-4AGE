@@ -1,10 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, ScrollView, SafeAreaView } from 'react-native';
+import Colors from './Colorstyle';
 
 export default function TerminosCScreen() {
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         <Text style={styles.title}>Términos y condiciones</Text>
 
         <Text style={styles.sectionTitle}>1. Aceptación</Text>
@@ -39,14 +43,17 @@ export default function TerminosCScreen() {
           Nos reservamos el derecho de modificar estos términos. Revisa esta sección periódicamente para estar al tanto de los cambios.
         </Text>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.fondo,
+  },
+  scrollView: {
+    flex: 1,
   },
   scrollContent: {
     padding: 20,
@@ -55,22 +62,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#41a3ff',
+    color: Colors.primary,
     textAlign: 'center',
-  },
-  subTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
-    color: '#41a3ff',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 15,
     marginBottom: 5,
-    color: '#41a3ff',
+    color: Colors.primary,
   },
   text: {
     fontSize: 16,

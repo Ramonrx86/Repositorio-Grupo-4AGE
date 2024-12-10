@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import Colors from './Colorstyle';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 
@@ -7,16 +8,16 @@ const CalendarioScreen = () => {
   const scrollViewRef = useRef(null);
 
   const [notifications, setNotifications] = useState([
-    { id: 1, date: '2024-11-15', text: 'Recolección de residuos reciclables', issuedOn: '2024-11-01' },
-    { id: 2, date: '2024-11-16', text: 'Reunión sobre estrategias de reciclaje', issuedOn: '2024-11-02' },
-    { id: 3, date: '2024-11-17', text: 'Entrega de reporte de reciclaje', issuedOn: '2024-11-03' },
-    { id: 4, date: '2024-11-18', text: 'Limpieza comunitaria y separación de basura', issuedOn: '2024-11-04' },
-    { id: 5, date: '2024-11-19', text: 'Revisión de centros de reciclaje', issuedOn: '2024-11-05' },
-    { id: 6, date: '2024-11-20', text: 'Día de capacitación sobre reciclaje y recolección', issuedOn: '2024-11-06' },
-    { id: 7, date: '2024-11-21', text: 'Recolección de residuos no reciclables', issuedOn: '2024-11-07' },
-    { id: 8, date: '2024-11-22', text: 'Revisión de contenedores de reciclaje', issuedOn: '2024-11-08' },
-    { id: 9, date: '2024-11-23', text: 'Inspección de puntos de recolección de basura', issuedOn: '2024-11-09' },
-    { id: 10, date: '2024-11-24', text: 'Día sin basura: Participa en el reciclaje comunitario', issuedOn: '2024-11-10' },
+    { id: 1, date: '2024-12-15', text: 'Recolección de residuos reciclables', issuedOn: '2024-11-01' },
+    { id: 2, date: '2024-12-16', text: 'Reunión sobre estrategias de reciclaje', issuedOn: '2024-11-02' },
+    { id: 3, date: '2024-12-17', text: 'Entrega de reporte de reciclaje', issuedOn: '2024-11-03' },
+    { id: 4, date: '2024-12-18', text: 'Limpieza comunitaria y separación de basura', issuedOn: '2024-11-04' },
+    { id: 5, date: '2024-12-19', text: 'Revisión de centros de reciclaje', issuedOn: '2024-11-05' },
+    { id: 6, date: '2024-12-20', text: 'Día de capacitación sobre reciclaje y recolección', issuedOn: '2024-11-06' },
+    { id: 7, date: '2024-12-21', text: 'Recolección de residuos no reciclables', issuedOn: '2024-11-07' },
+    { id: 8, date: '2024-12-22', text: 'Revisión de contenedores de reciclaje', issuedOn: '2024-11-08' },
+    { id: 9, date: '2024-12-23', text: 'Inspección de puntos de recolección de basura', issuedOn: '2024-11-09' },
+    { id: 10, date: '2024-12-24', text: 'Día sin basura: Participa en el reciclaje comunitario', issuedOn: '2024-11-10' },
   ]);
   
 
@@ -61,7 +62,7 @@ const CalendarioScreen = () => {
     acc[notification.date] = {
       marked: true,
       dotColor: 'red',
-      selectedColor: '#41a3ff',
+      selectedColor: Colors.primary,
     };
     return acc;
   }, {});
@@ -80,7 +81,7 @@ const CalendarioScreen = () => {
           ...markedDates,
           [selectedDate]: {
             selected: true,
-            selectedColor: '#41a3ff',
+            selectedColor: Colors.primary,
             selectedTextColor: 'white',
           },
         }}
@@ -121,13 +122,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#eeeeee',
   },
   selectedDateText: {
     marginTop: 20,
     fontSize: 20,  // Tamaño de texto aumentado
     fontWeight: '600',
-    color: '#41a3ff',
+    color: Colors.primary,
   },
   customDayContainer: {
     flex: 1,

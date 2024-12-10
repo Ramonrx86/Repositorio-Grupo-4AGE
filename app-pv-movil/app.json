@@ -1,5 +1,7 @@
 {
   "expo": {
+    "platforms": ["ios", "android"],
+    "permissions": ["LOCATION"],
     "name": "app-pv-movil",
     "slug": "app-pv-movil",
     "version": "1.0.0",
@@ -14,7 +16,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.app-pv-movil",  
+      "bundleIdentifier": "com.example.app-pv-movil",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrar tu posición en el mapa."
       }
@@ -24,12 +26,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["ACCESS_FINE_LOCATION"],
-      "package": "com.example.app-pv-movil" 
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.example.app-pv-movil"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite"
+    ]
   }
 }
-

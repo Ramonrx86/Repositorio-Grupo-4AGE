@@ -1,4 +1,5 @@
 import React from 'react';//Botón debajo del logo
+import Colors from './Colorstyle';
 import { View, Text, StyleSheet, Alert, FlatList, Pressable, Linking } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -51,7 +52,7 @@ const ContactoScreen = () => {
   const renderContactoItem = ({ item }) => (
     <Card style={styles.card}>
       <View style={styles.cardContent}>
-        <Icon name={item.icon} size={46} color="#41a3ff" style={styles.icon} />
+        <Icon name={item.icon} size={46} color={Colors.primary} style={styles.icon} />
         <View style={styles.cardText}>
           <Text style={styles.cardTitle}>{item.title}</Text>
           <Text style={styles.cardDescription}>{item.description}</Text>
@@ -83,14 +84,14 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 0,
     margin: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.fondo, 
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-    color: '#41a3ff',
+    color: Colors.primary,  // Título general en color azul
   },
   list: {
     paddingBottom: 16,
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#333',
+    color: Colors.primary,  // Título dentro de las tarjetas en color azul
   },
   cardDescription: {
     fontSize: 14,
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     margin: 6,
   },
   button: {
-    backgroundColor: '#41a3ff',
+    backgroundColor: Colors.primary, 
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,
@@ -137,5 +138,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
 
 export default ContactoScreen;
