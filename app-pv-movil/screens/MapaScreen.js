@@ -3,6 +3,9 @@ import { View, StyleSheet, Dimensions, Text, Modal, TouchableOpacity, Image, Scr
 import MapView, { Marker } from 'react-native-maps';
 import { db } from './firebase'; // Importa la configuración de Firebase
 import { collection, getDocs } from 'firebase/firestore'; // Importa las funciones necesarias de Firestore
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Usando un ícono flotante
+import Colors from './Colorstyle';
+import * as Location from 'expo-location'; // Para acceder a la ubicación del usuario
 
 const MapaScreen = () => {
   const [region, setRegion] = useState({
@@ -15,6 +18,8 @@ const MapaScreen = () => {
   const [puntosVerdes, setPuntosVerdes] = useState([]); // Aquí se guardarán los puntos verdes obtenidos de Firestore
   const [error, setError] = useState(null); // Para manejar y mostrar cualquier error
   const [selectedPoint, setSelectedPoint] = useState(null); // Para almacenar el punto seleccionado
+  const [modalVisible, setModalVisible] = useState(false); // Para manejar la visibilidad del modal de categorías
+  const [selectedCategory, setSelectedCategory] = useState(null); // Para almacenar la categoría seleccionada
 
   useEffect(() => {
     const fetchPuntos = async () => {
@@ -58,7 +63,7 @@ const MapaScreen = () => {
     };
 
     fetchPuntos(); // Cargar los puntos verdes al inicio
-  }, []);
+  }, []); 
 
   // Función para obtener las categorías activas
   const getCategorias = (punto) => {
@@ -80,19 +85,57 @@ const MapaScreen = () => {
     setSelectedPoint(punto);
   };
 
+  // Filtrar puntos según la categoría seleccionada
+  const filteredPuntos = puntosVerdes.filter((punto) => {
+    const categorias = getCategorias(punto);
+    return selectedCategory ? categorias.includes(selectedCategory) : true;
+  });
+
+  // Mostrar u ocultar el modal de filtro
+  const toggleFilterModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
+  // Manejar la selección de una categoría para el filtro
+  const handleCategorySelect = (category) => {
+    if (category === 'Todas las categorías') {
+      setSelectedCategory(null); // Desmarcar cualquier categoría seleccionada
+    } else {
+      setSelectedCategory(selectedCategory === category ? null : category); // Si la categoría ya está seleccionada, la deselecciona
+    }
+    setModalVisible(false); // Cerrar el modal al seleccionar una categoría
+  };
+
+  // Función para obtener la ubicación del usuario
+  const getUserLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setError('Permiso denegado para acceder a la ubicación');
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setRegion({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.0222,
+      longitudeDelta: 0.0221,
+    });
+  };
+
   return (
     <View style={styles.container}>
       {error && <Text>{error}</Text>}
-      {puntosVerdes.length > 0 ? (
+      {filteredPuntos.length > 0 ? (
         <MapView
           style={styles.map}
           region={region}
-          showsUserLocation={true}
+          showsUserLocation={false}
           zoomEnabled={true}
           scrollEnabled={true}
           mapType="satellite"
         >
-          {puntosVerdes.map((punto, index) => (
+          {filteredPuntos.map((punto, index) => (
             <Marker
               key={index}
               coordinate={{
@@ -107,6 +150,53 @@ const MapaScreen = () => {
         </MapView>
       ) : (
         <Text>No hay puntos disponibles para mostrar.</Text>
+      )}
+
+      {/* Botón flotante para mostrar el modal de filtro */}
+      <TouchableOpacity style={styles.filterButton} onPress={toggleFilterModal}>
+        <Icon name="filter-list" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Modal para seleccionar categorías */}
+      {modalVisible && (
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={toggleFilterModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Seleccionar Categoría</Text>
+              <ScrollView style={styles.categoriesContainer}>
+                <TouchableOpacity
+                  style={styles.categoryItem}
+                  onPress={() => handleCategorySelect('Todas las categorías')} // Seleccionar "Todas las categorías"
+                >
+                  <Text style={styles.categoryText}>
+                    {selectedCategory === null ? '✔ ' : ''}Todas las categorías
+                  </Text>
+                </TouchableOpacity>
+                {['Botellas de Plástico', 'Cartón', 'Latas de Aluminio', 'Papel', 'Vidrio', 'Orgánico'].map((category) => (
+                  <TouchableOpacity
+                    key={category}
+                    style={styles.categoryItem}
+                    onPress={() => handleCategorySelect(category)} // Cierra el modal al seleccionar la categoría
+                  >
+                    <Text style={styles.categoryText}>
+                      {selectedCategory === category ? '✔ ' : ''}{category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              {/* Botón para cerrar el modal */}
+              <TouchableOpacity style={styles.closeButton} onPress={toggleFilterModal}>
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       )}
 
       {/* Modal para mostrar los detalles del punto */}
@@ -141,16 +231,19 @@ const MapaScreen = () => {
                 />
               )}
 
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setSelectedPoint(null)}
-              >
+              {/* Botón para cerrar el modal del punto */}
+              <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedPoint(null)}>
                 <Text style={styles.closeButtonText}>Cerrar</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       )}
+
+      {/* Botón para localizar al usuario */}
+      <TouchableOpacity style={styles.locationButton} onPress={getUserLocation}>
+        <Icon name="my-location" size={30} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -168,6 +261,26 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
+  },
+  filterButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: Colors.primary,
+    padding: 15,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locationButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20, // Mover la ubicación del botón a la derecha
+    backgroundColor: Colors.primary,
+    padding: 15,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContainer: {
     flex: 1,
@@ -187,37 +300,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  modalDescription: {
-    fontSize: 14,
-    marginBottom: 10,
-  },
   modalCategoriesTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   categoriesContainer: {
     marginBottom: 10,
   },
   categoryItem: {
-    fontSize: 14,
-    color: '#555',
+    padding: 10,
   },
-  image: {
-    width: '100%',  // Ocupa todo el ancho disponible del contenedor
-    height: 0,      // Establece el alto en 0 inicialmente
-    paddingBottom: '56.25%', // Este valor es para mantener la relación 16:9, ajusta según el tipo de imagen
-    resizeMode: 'contain', // Mantiene las proporciones sin distorsionar
+  categoryText: {
+    fontSize: 16,
   },
   closeButton: {
-    backgroundColor: '#4CAF50',
+    marginTop: 15,
+    backgroundColor: Colors.primary,
     padding: 10,
     borderRadius: 5,
-    marginTop: 10,
   },
   closeButtonText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginTop: 10,
+    borderRadius: 10,
   },
 });
 

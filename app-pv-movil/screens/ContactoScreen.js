@@ -1,12 +1,11 @@
-import React from 'react';//Botón debajo del logo
+import React from 'react';
 import Colors from './Colorstyle';
-import { View, Text, StyleSheet, Alert, FlatList, Pressable, Linking } from 'react-native';
+import { View, Text, StyleSheet, Alert, FlatList, Pressable, Linking, ScrollView } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-
 const ContactoScreen = () => {
-  const contactData = [ 
+  const contactData = [
     {
       id: '1',
       title: 'Página Municipal',
@@ -43,12 +42,13 @@ const ContactoScreen = () => {
       icon: 'instagram',
     },
   ];
+
   const handlePress = (link) => {
     Linking.openURL(link).catch(() => {
       Alert.alert('Error', 'No se pudo abrir el enlace.');
     });
   };
-  //Iconos de los enlaces, tamaño y color
+
   const renderContactoItem = ({ item }) => (
     <Card style={styles.card}>
       <View style={styles.cardContent}>
@@ -57,7 +57,6 @@ const ContactoScreen = () => {
           <Text style={styles.cardTitle}>{item.title}</Text>
           <Text style={styles.cardDescription}>{item.description}</Text>
         </View>
-         {/* Botón para dirigirse al enlace o número de contacto y correo */}
         <Pressable onPress={() => handlePress(item.link)} style={styles.button}>
           <Text style={styles.buttonText}>Abrir</Text>
         </Pressable>
@@ -66,7 +65,7 @@ const ContactoScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Contacto</Text>
       <FlatList
         data={contactData}
@@ -74,24 +73,23 @@ const ContactoScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
     marginTop: 0,
     margin: 8,
-    backgroundColor: Colors.fondo, 
+    backgroundColor: Colors.fondo,
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-    color: Colors.primary,  // Título general en color azul
+    color: Colors.primary,
   },
   list: {
     paddingBottom: 16,
@@ -118,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: Colors.primary,  // Título dentro de las tarjetas en color azul
+    color: Colors.primary,
   },
   cardDescription: {
     fontSize: 14,
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
     margin: 6,
   },
   button: {
-    backgroundColor: Colors.primary, 
+    backgroundColor: Colors.primary,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,
@@ -139,5 +137,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 export default ContactoScreen;
+
+
