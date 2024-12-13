@@ -1,0 +1,28 @@
+Contribuciones
+
+-Macarena Liset  Almonacid Gonzalez
+-Jose Ramon Perez Guentelican
+-Alexis Jabian Barria Veloz
+-Hector Guido Oyarzo Alvarado
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+prototipo de la base de datos					-Macarena			-Ramon			-Alexis			-Hector
+diseño	de la app								-Macarena			-					-Alexis			-Hector
+creación de base de datos en firebase		-Macarena			-Ramon			-				-
+estructura de la app en Figma				-Macarena			-Ramon			-Alexis			-Hector
+menu deslizable								-						-Ramon			-Alexis			-Hector
+filtro para el mapa							-						-Ramon			-Alexis			-
+
+app.js											-Macarena			-Ramon			-Alexis			-Hector
+AcercaAppScreen.js							-Macarena			-					-				-Hector
+AjustesScreen.js								-Macarena			-Ramon			-Alexis			-Hector
+Bienvenida.js									-						-					-Alexis			-
+CalendarioScreen.js							-Macarena			-Ramon			-				-
+Colorstyle.js									-						-Ramon			-				-
+ContactoScreen.js							-Macarena			-					-Alexis			-	
+DenunciasScreen.js							-Macarena			-Ramon			-Alexis			-Hector
+firebase.js										-						-Ramon			-				-
+MapaScreen.js								-Macarena			-Ramon			-Alexis			-Hector
+NotificacionesScreen.js						-Macarena			-					-				-Hector
+ReciclaScreen.js								-Macarena			-Ramon			-Alexis			-Hector
+TerminosCScreen.js							-						-					-				-Hector
+												
