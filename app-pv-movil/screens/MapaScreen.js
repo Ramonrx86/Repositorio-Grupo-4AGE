@@ -3,9 +3,9 @@ import { View, StyleSheet, Dimensions, Text, Modal, TouchableOpacity, Image, Scr
 import MapView, { Marker } from 'react-native-maps';
 import { db } from './firebase'; // Importa la configuración de Firebase
 import { collection, getDocs } from 'firebase/firestore'; // Importa las funciones necesarias de Firestore
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Usando un ícono flotante
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from './Colorstyle';
-import * as Location from 'expo-location'; // Para acceder a la ubicación del usuario
+import * as Location from 'expo-location';
 
 const MapaScreen = () => {
   const [region, setRegion] = useState({
@@ -15,7 +15,7 @@ const MapaScreen = () => {
     longitudeDelta: 0.0221,
   });
 
-  const [puntosVerdes, setPuntosVerdes] = useState([]); // Aquí se guardarán los puntos verdes obtenidos de Firestore
+  const [puntosVerdes, setPuntosVerdes] = useState([]); // Se guardarán los puntos verdes obtenidos de Firestore
   const [error, setError] = useState(null); // Para manejar y mostrar cualquier error
   const [selectedPoint, setSelectedPoint] = useState(null); // Para almacenar el punto seleccionado
   const [modalVisible, setModalVisible] = useState(false); // Para manejar la visibilidad del modal de categorías

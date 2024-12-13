@@ -37,7 +37,7 @@ const App = () => {
         useNativeDriver: true,
       }).start(() => setMenuVisible(false));
     } else {
-      setMenuVisible(true); // Asegura que el menú sea visible durante la animación
+      setMenuVisible(true); // Menú sea visible durante la animación
       Animated.timing(menuTranslateX, {
         toValue: 0,
         duration: 300,

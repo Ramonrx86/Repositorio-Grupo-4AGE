@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'; // Hook para gestionar el estado
+import React, { useState, useEffect } from 'react';
 import Colors from './Colorstyle'; // Colores personalizados
-import { View, Text, Switch, StyleSheet, Dimensions, Button, ScrollView } from 'react-native'; // Componentes de React Native
-import Slider from '@react-native-community/slider'; // Componente deslizante para ajustar el tamaño de fuente
-import { LinearGradient } from 'expo-linear-gradient'; // Gradiente de color para el fondo
+import { View, Text, Switch, StyleSheet, Dimensions, Button, ScrollView } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { LinearGradient } from 'expo-linear-gradient';
 
-// Componente SettingsScreen donde se configuran los ajustes de la aplicación
 export default function SettingsScreen({ navigation }) {
   // Declaración de estados con useState
   const [darkMode, setDarkMode] = useState(false); // Estado para tema oscuro/claro

@@ -1,7 +1,7 @@
 import React from 'react';
 import Colors from './Colorstyle';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // Asegúrate de importar correctamente FontAwesome
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function ReciclaScreen() {
   const tips = [

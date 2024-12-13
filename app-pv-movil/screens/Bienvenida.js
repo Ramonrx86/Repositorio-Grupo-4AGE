@@ -22,8 +22,8 @@ const SplashScreen = ({ onFinish }) => {
       }).start();
 
       // Llamar a onFinish después de la desaparición para cambiar a la pantalla principal
-      setTimeout(onFinish, 1000); // Asegura que onFinish se llama después de que desaparezca
-    }, 3000); // Mantenemos el logo visible durante 3 segundos
+      setTimeout(onFinish, 1000); 
+    }, 3000); 
 
     return () => clearTimeout(timer);
   }, [fadeAnim, onFinish]);
@@ -33,7 +33,7 @@ const SplashScreen = ({ onFinish }) => {
       <Animated.Image
         source={require('../assets/logo.png')}
         style={[styles.logo, { opacity: fadeAnim }]} // Animación de opacidad
-        resizeMode="contain" // Asegura que el logo se ajuste correctamente sin recortes
+        resizeMode="contain" 
       />
     </View>
   );

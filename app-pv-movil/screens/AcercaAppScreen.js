@@ -1,6 +1,6 @@
 import React from 'react';
-import Colors from './Colorstyle'; // Estilos personalizados de colores
-import { StyleSheet, Text, View, ScrollView } from 'react-native'; // Componentes de React Native
+import Colors from './Colorstyle';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 // Componente principal que muestra la información de la app
 export default function AcercaAppScreen() {
